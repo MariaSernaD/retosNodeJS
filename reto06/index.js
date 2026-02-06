@@ -22,6 +22,21 @@ app.get("/api/tasks/:id", (req, res) => {
     res.status(200).json(task);
   }
 });
+
+app.post("/api/tasks", (req, res) => {
+  const { desc, status } = req.body;
+  if (!desc) {
+    return res.status(400).json({ error: "Este campo es obligatorio" });
+  }
+  const newTask = {
+    id: tasks.length > 0 ? Math.max(...tasks.map((t) => t.id)) + 1 : 1,
+    desc: desc,
+    status: "pending", // Por defecto, el estado es "pending"
+  };
+  tasks.push(newTask);
+  res.status(201).json(tasks);
+});
+
 app.listen(3000, () => {
   console.log(colors.cyan("Servidor corriendo en http://localhost:3000"));
 });
