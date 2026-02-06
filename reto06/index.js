@@ -26,7 +26,7 @@ app.get("/api/tasks/:id", (req, res) => {
 app.post("/api/tasks", (req, res) => {
   const { desc, status } = req.body;
   if (!desc) {
-    return res.status(400).json({ error: "Este campo es obligatorio" });
+    return res.status(400).json({ error: "La descripción es requerida" });
   }
   const newTask = {
     id: tasks.length > 0 ? Math.max(...tasks.map((t) => t.id)) + 1 : 1,
@@ -35,6 +35,31 @@ app.post("/api/tasks", (req, res) => {
   };
   tasks.push(newTask);
   res.status(201).json(tasks);
+});
+
+app.put("/api/tasks/:id", (req, res) => {
+  const id = parseInt(req.params.id);
+  const { desc, status } = req.body;
+
+  const tasksIndex = tasks.findIndex((t) => t.id === id);
+
+  if (tasksIndex === -1) {
+    return res.status(404).json({ error: "Tarea no encontrada" });
+  }
+
+  if (!desc || !status) {
+    return res
+      .status(400)
+      .json({ error: "La descripción y el estado son requeridos" });
+  }
+
+  tasks[tasksIndex].desc = desc;
+  tasks[tasksIndex].status = status;
+
+  res.status(200).json({
+    message: "Tarea actualizada correctamente",
+    task: tasks[tasksIndex],
+  });
 });
 
 app.listen(3000, () => {
