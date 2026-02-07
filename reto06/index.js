@@ -62,6 +62,19 @@ app.put("/api/tasks/:id", (req, res) => {
   });
 });
 
+app.delete("/api/tasks/:id", (req, res) => {
+  const id = parseInt(req.params.id);
+  const { desc, status } = req.body;
+
+  const tasksIndex = tasks.findIndex((t) => t.id === id);
+
+  if (tasksIndex === -1) {
+    return res.status(404).json({ error: "Tarea no encontrada" });
+  }
+  tasks.splice(tasksIndex, 1);
+  res.status(200).json({ message: "Tarea eliminada correctamente" });
+});
+
 app.listen(3000, () => {
   console.log(colors.cyan("Servidor corriendo en http://localhost:3000"));
 });
