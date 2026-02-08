@@ -11,10 +11,14 @@ let notes = [
 ];
 
 //RUTAS
+
+//1.GET/notes (enlista todas las notas)
 app.get("/api/notes", (req, res) => {
   res.status(200).json({ notes });
+
 });
 
+//2. GET/notes (identifica y lista las notas por id)
 app.get("/api/notes/:id", (req, res) => {
   const id = parseInt(req.params.id);
   const note = notes.find((n) => n.id === id);
@@ -25,6 +29,7 @@ app.get("/api/notes/:id", (req, res) => {
   res.status(200).json(note);
 });
 
+//3. Publica o agrega una nota
 app.post("/api/notes", (req, res) => {
   const { title, content } = req.body;
   if (!title || !content) {
@@ -32,7 +37,7 @@ app.post("/api/notes", (req, res) => {
       .status(400)
       .json({ error: "El título y el contenido son requeridos" });
   }
-  
+
   if (content.length < 10) {
     return res
       .status(400)
@@ -44,8 +49,36 @@ app.post("/api/notes", (req, res) => {
     title: title,
     content: content,
   };
-  notes.push({message: "Nota agregada", note: newNote});
+  notes.push(newNote);
   res.status(201).json(notes);
+});
+
+app.put("/api/notes/:id", (req, res) => {
+  const id = parseInt(req.params.id);
+  const { title, content } = req.body;
+  const note = notes.find((n) => n.id === id);
+
+  if (!note) {
+    return res.status(404).json({ error: "Nota no encontrada" });
+  }
+  if (title && content) {
+    note.title = title;
+    note.content = content;
+  }
+
+  res.status(200).json({ message: "Nota actualizada", note });
+});
+
+app.delete("/api/notes/:id", (req, res) => {
+  const id = parseInt(req.params.id);
+  const index = notes.findIndex((n)=> n.id === id);
+
+  if (index === -1){
+    return res.status(404).json({error: "Nota no encontrada"});
+  }
+  notes.splice(index, 1);
+  res.status(200).json("Nota eliminada");
+
 });
 
 app.listen(3000, () => {
