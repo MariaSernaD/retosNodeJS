@@ -53,6 +53,7 @@ app.post("/api/notes", (req, res) => {
   res.status(201).json(notes);
 });
 
+//4. Actualiza una nota por id
 app.put("/api/notes/:id", (req, res) => {
   const id = parseInt(req.params.id);
   const { title, content } = req.body;
@@ -69,6 +70,7 @@ app.put("/api/notes/:id", (req, res) => {
   res.status(200).json({ message: "Nota actualizada", note });
 });
 
+//5. Elimina una nota por id
 app.delete("/api/notes/:id", (req, res) => {
   const id = parseInt(req.params.id);
   const index = notes.findIndex((n)=> n.id === id);
